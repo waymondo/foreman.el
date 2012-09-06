@@ -29,6 +29,8 @@
 ;; (require 'foreman)
 
 ;;; Code:
+(setq comint-buffer-maximum-size 10240) ;; set maximum-buffer size for shell-mode
+(add-hook 'comint-output-filter-functions 'comint-truncate-buffer) ;; truncate shell buffer to comint-buffer-maximum-size.
 
 (defun foreman-start ()
   "Run foreman start for the current project."
