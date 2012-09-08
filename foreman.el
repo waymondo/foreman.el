@@ -32,9 +32,12 @@
 (setq comint-buffer-maximum-size 10240) ;; set maximum-buffer size for shell-mode
 (add-hook 'comint-output-filter-functions 'comint-truncate-buffer) ;; truncate shell buffer to comint-buffer-maximum-size.
 
-(defun foreman-start ()
+(defun foreman-start (&optional name)
   "Run foreman start for the current project."
   (interactive)
+  (defvar procfile-name (if (= (length name) 0)
+                            "*Foreman*"
+                          (concat "*" name "-Foreman*")))
   (let ((procfile-dir (locate-procfile)))
     (if (= (length procfile-dir) 0)
         (message "Procfile not found or missing.")
@@ -44,7 +47,7 @@
         (remove-hook 'shell-mode-hook 'toggle-read-only-and-unhook)
         )
       (add-hook 'shell-mode-hook 'toggle-read-only-and-unhook)
-      (async-shell-command (format "cd %s && foreman start" (shell-quote-argument procfile-dir)) "*Foreman*")
+      (async-shell-command (format "cd %s && foreman start" (shell-quote-argument procfile-dir)) procfile-name)
       )))
 
 (defun* locate-procfile (&optional (dir default-directory))
