@@ -6,7 +6,7 @@
 ;; URL: http://github.com/waymondo/
 ;; Keywords: foreman ruby
 ;; Created: 07 Jun 2012
-;; Version: 0.0.1
+;; Version: 0.1.0
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -29,8 +29,21 @@
 ;; (require 'foreman)
 
 ;;; Code:
-(setq comint-buffer-maximum-size 10240) ;; set maximum-buffer size for shell-mode
-(add-hook 'comint-output-filter-functions 'comint-truncate-buffer) ;; truncate shell buffer to comint-buffer-maximum-size.
+
+(defun foreman-shell-readonly-scroll-and-truncate ()
+  (make-local-variable 'comint-scroll-show-maximum-output)
+  (make-local-variable 'comint-buffer-maximum-size)
+  (setq comint-scroll-show-maximum-output t) ;; always scroll to bottom to show maximum output
+  (setq comint-buffer-maximum-size 100) ;; set maximum-buffer size for comint-mode
+  (toggle-read-only +1)
+  (if (string= procfile-name (buffer-name))
+      (add-hook 'comint-output-filter-functions 'comint-truncate-buffer)) ;; truncate out buffer to comint-buffer-maximum-size.
+)
+
+(defun foreman-shell-hook ()
+  (interactive)
+  (if (string= procfile-name (buffer-name))
+      (foreman-shell-readonly-scroll-and-truncate)))
 
 (defun foreman-start (&optional name)
   "Run foreman start for the current project."
@@ -41,12 +54,7 @@
   (let ((procfile-dir (locate-procfile)))
     (if (= (length procfile-dir) 0)
         (message "Procfile not found or missing.")
-      (defun toggle-read-only-and-unhook ()
-        (interactive)
-        (toggle-read-only 1)
-        (remove-hook 'shell-mode-hook 'toggle-read-only-and-unhook)
-        )
-      (add-hook 'shell-mode-hook 'toggle-read-only-and-unhook)
+      (add-hook 'shell-mode-hook 'foreman-shell-hook)
       (async-shell-command (format "cd %s && foreman start" (shell-quote-argument procfile-dir)) procfile-name)
       )))
 
