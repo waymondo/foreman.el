@@ -30,6 +30,8 @@
 
 ;;; Code:
 
+(eval-when-compile (require 'cl))
+
 (defun foreman-shell-readonly-scroll-and-truncate ()
   (make-local-variable 'comint-scroll-show-maximum-output)
   (make-local-variable 'comint-buffer-maximum-size)
