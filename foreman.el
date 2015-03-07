@@ -57,7 +57,7 @@
     (if (= (length procfile-dir) 0)
         (message "Procfile not found or missing.")
       (add-hook 'shell-mode-hook 'foreman-shell-hook)
-      (async-shell-command (format "cd %s && foreman start" (shell-quote-argument procfile-dir)) procfile-name)
+      (async-shell-command (format "cd %s && foreman start" (shell-quote-argument (expand-file-name procfile-dir))) procfile-name)
       )))
 
 (defun* locate-procfile (&optional (dir default-directory))
