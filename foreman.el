@@ -35,18 +35,18 @@
 (defun foreman-shell-readonly-scroll-and-truncate ()
   (make-local-variable 'comint-scroll-show-maximum-output)
   (make-local-variable 'comint-buffer-maximum-size)
-  (setq comint-scroll-show-maximum-output t) ;; always scroll to bottom to show maximum output
-  (setq comint-buffer-maximum-size 100) ;; set maximum-buffer size for comint-mode
+  (setq comint-scroll-show-maximum-output t)
+  (setq comint-buffer-maximum-size 100)
   (toggle-read-only +1)
   (if (string= procfile-name (buffer-name))
-      (add-hook 'comint-output-filter-functions 'comint-truncate-buffer)) ;; truncate out buffer to comint-buffer-maximum-size.
-)
+      (add-hook 'comint-output-filter-functions 'comint-truncate-buffer)))
 
 (defun foreman-shell-hook ()
   (interactive)
   (if (string= procfile-name (buffer-name))
       (foreman-shell-readonly-scroll-and-truncate)))
 
+;;;###autoload
 (defun foreman-start (&optional name)
   "Run foreman start for the current project."
   (interactive)
@@ -57,8 +57,7 @@
     (if (= (length procfile-dir) 0)
         (message "Procfile not found or missing.")
       (add-hook 'shell-mode-hook 'foreman-shell-hook)
-      (async-shell-command (format "cd %s && foreman start" (shell-quote-argument (expand-file-name procfile-dir))) procfile-name)
-      )))
+      (async-shell-command (format "cd %s && foreman start" (shell-quote-argument (expand-file-name procfile-dir))) procfile-name))))
 
 (defun* locate-procfile (&optional (dir default-directory))
   (let ((has-procfile (directory-files dir nil "^Procfile$"))
