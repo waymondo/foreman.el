@@ -1,4 +1,8 @@
-# foreman.el
+# Depreciated
+
+If you are here, you probably want to install [foreman-mode](https://github.com/zweifisch/foreman-mode), which offers improved control over your `Procfile` based applications.
+
+## foreman.el
 
 a super simple lisp for running [foreman](https://github.com/ddollar/foreman) in Emacs
 
